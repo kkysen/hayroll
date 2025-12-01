@@ -108,10 +108,11 @@ git_clone_or_checkout() {
       git -C "${dir}" reset --hard "${target_ref}" --quiet
     fi
   else
+    set -x
     echo "[*] Cloning ${url} into ${dir}"
-    git clone --depth 1 --quiet "${url}" "${dir}"
-    git -C "${dir}" fetch --depth 1 --quiet origin "${tag}"
-    git -C "${dir}" checkout --quiet FETCH_HEAD
+    git clone --depth 1 "${url}" "${dir}"
+    git -C "${dir}" fetch --depth 1 origin "${tag}"
+    git -C "${dir}" checkout FETCH_HEAD
   fi
 }
 
