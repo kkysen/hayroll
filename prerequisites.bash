@@ -97,10 +97,10 @@ git_clone_or_checkout() {
   local dir=$1 url=$2 tag=$3
   if [[ -d "${dir}/.git" ]]; then
     if [[ "${tag}" == "main" ]]; then
-      git -C "${dir}" fetch origin main --quiet
+      git -C "${dir}" fetch origin main --depth 1 --quiet
       local target_ref="origin/main"
     else
-      git -C "${dir}" fetch --tags --quiet
+      git -C "${dir}" fetch --tags --depth 1 --quiet
       local target_ref="${tag}"
     fi
     if [[ "$(git -C "${dir}" rev-parse HEAD)" != "$(git -C "${dir}" rev-parse "${target_ref}")" ]]; then
@@ -109,8 +109,9 @@ git_clone_or_checkout() {
     fi
   else
     echo "[*] Cloning ${url} into ${dir}"
-    git clone --quiet "${url}" "${dir}"
-    git -C "${dir}" checkout --quiet "${tag}"
+    git clone --depth 1 --quiet "${url}" "${dir}"
+    git -C "${dir}" fetch --depth 1 --quiet origin "${tag}"
+    git -C "${dir}" checkout --quiet FETCH_HEAD
   fi
 }
 
